@@ -1,0 +1,20 @@
+<iscontent type="text/plain" charset="UTF-8" compact="false"/>
+<isif condition="${pdict.CurrentHttpParameterMap.type.stringValue == 'product'}">
+importPackage(dw.catalog);
+
+var product : Product = ProductMgr.getProduct("%%PRODUCT_ID%%");
+
+return product;
+<iselseif condition="${pdict.CurrentHttpParameterMap.type.stringValue == 'customer'}">
+importPackage( dw.customer );
+
+var customer : Customer = CustomerMgr.getProfile("%%CUSTOMER_NO%%");
+
+return customer;
+<iselseif condition="${pdict.CurrentHttpParameterMap.type.stringValue == 'order'}">
+importPackage( dw.order );
+
+var order : Order = OrderMgr.getOrder("%%ORDER_NO%%");
+
+return order;
+</isif>

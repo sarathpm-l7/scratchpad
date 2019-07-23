@@ -1,0 +1,62 @@
+<html>
+<head>
+    <link rel="stylesheet" href="${URLUtils.staticURL('/lib/codemirror.css')}">
+    <script src="${URLUtils.staticURL('/lib/codemirror.js')}"></script>
+    <script src="${URLUtils.staticURL('/lib/javascript.js')}"></script>
+    <link href='http://fonts.googleapis.com/css?family=Cabin+Sketch:bold&v1' rel='stylesheet' type='text/css'>
+<style>
+body {
+	background-color: whitesmoke;
+}
+h1 {
+	font-family: 'Cabin Sketch', arial, serif;
+	font-size: 32px;
+	font-weight: normal;
+	text-shadow: 4px 4px 4px #aaa;
+	color: navy;
+	padding-bottom: 0px;
+	margin-bottom: 0;
+	border-bottom: 0px dotted navy;
+}
+textarea, iframe {
+	width: 100%;
+	background-color: white;
+}
+
+iframe {
+	border: 1px solid navy;
+}
+
+iframe body {
+	margin: 0;
+}
+
+div.CodeMirror-scroll {
+	background-color: white;
+	border: 1px solid navy;
+}
+</style>
+</head>
+<body>
+	<h1>demandware scratchpad</h1>
+	<form action="${URLUtils.url('Scratchpad-Process')}" method="post" name="sourceForm" target="resultsFrame">
+		<label for="source">Source:</label>
+		<textarea name="source" rows="10" id="source"></textarea>
+		<div>
+			<input type="submit" name="submit" value="Execute"/>
+			<input type="button" value="Clear" onclick="javascript:editor.setValue('');"/>
+		</div>
+	</form>
+	
+	<div>Result:</div>
+	<iframe name="resultsFrame"></iframe>
+
+    <script>
+      var editor = CodeMirror.fromTextArea(document.getElementById("source"), {
+        lineNumbers: false,
+        matchBrackets: true,
+        indentUnit: 4
+      });
+     </script>
+</body>
+</html>

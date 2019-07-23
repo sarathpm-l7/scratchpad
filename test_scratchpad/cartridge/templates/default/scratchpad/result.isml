@@ -1,0 +1,61 @@
+<head>
+<style>
+body {
+	font-family: Arial;
+	font-size: 12px;
+}
+table {
+	table-layout:fixed;
+	font-size:12px;
+	max-width: 1200px;
+	border-collapse: collapse;
+}
+table thead tr {	
+	background-color: whitesmoke;
+	text-align: left;
+	color: black;
+}
+td,th {
+	border: 1px solid lightgray;
+	padding: 4px;
+}
+h4 {
+	padding: 4px 6px;
+	background-color: lightgray;
+	color: navy;
+	border-bottom: 1px solid gray;
+}
+.property-name {
+	text-align: left;
+}
+.property-type {
+	text-align: center;
+	padding: 4px 12px;
+}
+pre.returned {
+	color: blue;
+}
+.error {
+	color:red;
+	font-weight: bold;
+}
+</style>
+</head>
+<body>
+	<isif condition="${!empty(pdict.Error)}">
+		<pre><span class="error">ERROR: </span>${pdict.Error}</pre>
+	<iselse/>
+		<isif condition="${!empty(pdict.Log)}">
+		<pre><isloop items="${pdict.Log}" var="line">${line}
+</isloop></pre>
+		</isif>
+	
+		<isif condition="${pdict.Result===null}">
+			<pre class="returned">null</pre>
+		<iselseif condition="${(typeof pdict.Result=='object')}">
+			<isinclude template="scratchpad/result/renderobject"/>
+		<iselse/>
+			<pre class="returned">${pdict.Result}</pre>
+		</isif>
+	</isif>
+</body>

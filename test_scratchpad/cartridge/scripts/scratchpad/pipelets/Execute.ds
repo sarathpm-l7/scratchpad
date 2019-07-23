@@ -1,0 +1,46 @@
+/**
+* Params:
+*
+*   @input Source : Object
+*   @input Basket : dw.order.Basket
+*   @input CurrentCustomer : Object
+*   @output Error : String
+*   @output Result : Object
+*   @output Log : Array
+*
+*/
+importPackage( dw.system );
+
+function execute( args : PipelineDictionary ) : Number {
+	args.Error = null;
+	
+	var pdict : Object = {
+		CurrentForms : args.CurrentForms,
+		CurrentCustomer : args.CurrentCustomer
+	};
+	
+	if(!empty(args.Basket)) pdict.Basket = args.Basket; 
+	
+	var _log : Array = new Array();
+
+	function trace(value) {
+		_log.push(value ? ""+value : "");
+	}
+
+	var out = {
+		print: trace
+	};
+	
+	var source : String = args.Source + "\nreturn ''";
+	
+	try {
+		var ret = (new Function("pdict", "trace", "out", source))(pdict, trace, out);
+		args.Result = ret;
+		args.Log = _log;
+	}
+	catch(e) {
+		args.Error = e.message;
+	}
+
+	return PIPELET_NEXT;
+}

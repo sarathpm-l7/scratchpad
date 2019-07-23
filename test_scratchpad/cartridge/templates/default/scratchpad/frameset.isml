@@ -1,0 +1,10 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd">
+<html>
+    <head>
+    	<title>${'#'} Scratchpad</title>
+    </head>
+    <frameset framespacing="3" <isif condition="${pdict.CurrentHttpParameterMap.isParameterSubmitted("hor")}">cols="50%,50%"<iselse/>rows="60%,40%"</isif> frameborder="2">
+        <frame name="editor" src="${URLUtils.url("Scratchpad-Editor")}" target="results">
+        <frame name="results" src="about:blank">
+    </frameset>
+</html>

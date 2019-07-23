@@ -1,0 +1,316 @@
+<!doctype html>
+<html>
+    <head>
+        <title></title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width">
+	    <link rel="stylesheet" href="${URLUtils.staticURL('/lib/codemirror.css')}">
+	    <script src="${URLUtils.staticURL('/lib/codemirror.js')}"></script>
+	    <script src="${URLUtils.staticURL('/lib/javascript.js')}"></script>
+	    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+	    <link href="//fonts.googleapis.com/css?family=Cabin+Sketch:bold&v1" rel="stylesheet" type="text/css">
+        <style>
+            html,body {
+                margin: 0;
+                padding: 0;
+                height: 100%;
+                font-family: Arial,Helvetica,sans-serif;
+            }
+            header {
+                -moz-box-sizing: border-box;
+                box-sizing: border-box;
+                background-color: whitesmoke;
+                height:40px;
+                width:100%;
+                position:fixed;
+                top:0;
+                padding:0 6px;
+                border-bottom: 1px solid lightgray;
+            }
+			header h1 {
+                font-size: 22px;
+				font-family: 'Cabin Sketch', arial, serif;
+				font-size: 24px;
+				font-weight: normal;
+				text-shadow: 4px 4px 4px #aaa;
+				color: navy;
+				padding: 5px;
+				margin: 0;
+				border-bottom: 0px dotted navy;
+			}
+            form {
+                -moz-box-sizing: border-box;
+                box-sizing: border-box;
+                width: 100%;
+                height: 100%;
+                padding-top:40px;
+                padding-bottom: 40px;
+            }
+            textarea {
+                -moz-box-sizing: border-box;
+                box-sizing: border-box;
+                margin:0;padding:0px;border:none;
+                display: block;
+                width:100%;
+                height:100%;
+                resize: none;
+            }
+            footer {
+                -moz-box-sizing: border-box;
+                box-sizing: border-box;
+                border-top: 1px solid lightgray;
+                background-color: whitesmoke;
+                height:40px;
+                position:fixed;
+                bottom: 0;
+                width:100%;
+                padding:6px;
+            }
+            .localstorage {
+                display: none;
+            }
+            nav {
+            	position: absolute;
+            	left: 168px;
+            	top: 3px;
+            	font-size: 12px;
+            }
+            ul {
+            	margin: 0; 
+            	padding: 0;
+            }
+            li {
+            	list-style: none;
+            }
+            a {text-decoration: none;color: navy;}
+            ul.popup a:hover {text-decoration: underline;}
+            label {font-size: 14px;}
+            ul.popup {
+            	display: none;
+                position: absolute;
+                left:-1px;
+                top:23px;
+                background-color: white;
+                border: 1px solid lightgray;
+                padding: 6px;
+                z-index: 100;
+            }
+            ul.popup li {
+                white-space: nowrap;
+                padding: 3px;
+            }
+            nav > ul {
+            	
+            }
+            nav > ul > li {
+               	border: 1px solid lightgray;
+               	padding : 6px;
+                display: inline-block;
+                background-color: #E6E6E6;
+                padding:4px;
+                margin: 4px;
+                position:relative;
+            }
+            nav > ul > li:hover ul.popup {
+            	display: block;
+            }
+            .CodeMirror, .CodeMirror-scroll {
+            	height: 100%;
+            }
+        </style>
+    </head>
+    <body>
+        <header>
+			<h1>${'#'} Scratchpad</h1>
+			<nav>
+				<ul>
+					<li>
+						<a href="javascript:void(0)">Use Snippet</a>
+						<ul class="popup snippet">
+							<li><a href="#product">Get Product...</a></li>	
+							<li><a href="#customer">Get Customer...</a></li>	
+							<li><a href="#order">Get Order...</a></li>	
+						</ul>
+					</li>
+                    <li>
+                        <a href="javascript:void(0)">Import Package</a>
+                        <ul class="popup import">
+                            <li><a href="javascript:void(0)">dw.campaign</a></li>
+                            <li><a href="javascript:void(0)">dw.catalog</a></li>
+                            <li><a href="javascript:void(0)">dw.content</a></li>
+                            <li><a href="javascript:void(0)">dw.crypto</a></li>
+                            <li><a href="javascript:void(0)">dw.customer</a></li>
+                            <li><a href="javascript:void(0)">dw.io</a></li>
+                            <li><a href="javascript:void(0)">dw.net</a></li>
+                            <li><a href="javascript:void(0)">dw.object</a></li>
+                            <li><a href="javascript:void(0)">dw.ocapi.shop.account</a></li>
+                            <li><a href="javascript:void(0)">dw.ocapi.shop.basket</a></li>
+                            <li><a href="javascript:void(0)">dw.oms</a></li>
+                            <li><a href="javascript:void(0)">dw.order</a></li>
+                            <li><a href="javascript:void(0)">dw.rpc</a></li>
+                            <li><a href="javascript:void(0)">dw.system</a></li>
+                            <li><a href="javascript:void(0)">dw.util</a></li>
+                            <li><a href="javascript:void(0)">dw.value</a></li>
+                            <li><a href="javascript:void(0)">dw.web</a></li>  
+                        </ul>
+                    </li>
+                    <li>
+                        <a id="import-script" href="javascript:void(0)">Import Script...</a>
+                    </li>
+				</ul>
+			</nav>
+        </header>
+		<form action="${URLUtils.url('Scratchpad-Process')}" method="post" id="source-form" name="sourceForm" target="results">
+			<textarea name="source" rows="10" id="source"></textarea>            
+			<footer>
+                <button><strong>Execute</strong> [Ctrl+Enter]</button>
+                <button type="button" id="save"><strong>Save</strong><span> [Ctrl+S]</span></button>
+                <button type="button" id="restore"><strong>Restore</strong><span> [Ctrl+T]</span></button>
+                <button type="button" id="clear"><strong>Clear</strong><span> [Ctrl+N]</span></button>
+				<input type="checkbox" id="autosave" class="localstorage"/>
+                <label for="autosave" accesskey="S" class="localstorage">Save on execute</label>
+            </footer>
+        </form>
+
+        <script>
+            $(function(){
+                var editor = CodeMirror.fromTextArea(document.getElementById("source"), {
+                	mode: "text/javascript",
+                    lineNumbers: true,
+                    matchBrackets: true,
+                    indentUnit: 4,
+                    autofocus: true,
+                    extraKeys : {
+                    	"Ctrl-Enter" : function() {$("#source-form").submit()},
+                    	"Ctrl-S" : saveCode,
+                    	"Ctrl-T" : restoreCode,
+                    	"Ctrl-N" : clearCode
+                    }
+                });
+                
+                function okToLooseChanges() {
+                	return confirm("Are you sure you want to loose your changes?");
+                }
+                
+                function saveCode() {
+                	if(window.localStorage) {
+                		window.localStorage.code = editor.getValue();
+                		editor.markClean();
+                	}                	
+                }
+                
+                function restoreCode() {
+                	if(window.localStorage && window.localStorage.code && (editor.isClean() || okToLooseChanges())) {
+                    	editor.setValue(window.localStorage.code);
+                    	editor.markClean();
+                    	editor.focus();
+                    }
+                }
+                
+                function clearCode() {
+                	var source = editor.getValue();
+                	if(source && (editor.isClean() || okToLooseChanges())) {
+                		editor.setValue("");
+                		editor.markClean();
+                	}
+                }
+                
+                $("#source-form").submit(function(){editor.focus();});
+                
+                $("#clear").on("click", function() {
+                	clearCode();
+                	editor.focus();
+                });
+                
+                if(window.localStorage) {
+                    var $cache = {};
+                    $cache.textarea = $("textarea");
+
+                    $("#source-form").submit(function(){
+                        if($("#autosave").is(":checked")) {
+                        	saveCode();
+                        }
+                    });
+                    
+                    $("#save").on("click", function() {
+                    	saveCode();
+                    	editor.focus();
+                    });
+                    
+                    $("#restore").on("click", function() {
+                    	restoreCode();
+                    	editor.focus();
+                    });
+
+                    $(".localstorage").show();
+                }
+                
+                $(".popup.snippet").on("click", "a", function() {
+                	if(!editor.isClean() && !okToLooseChanges()) return false;
+                	
+                	var defs = {
+                   		"product" : {prompt : "Product ID", strToReplace:"%%PRODUCT_ID%%"},
+	            		"customer" : {prompt : "Customer Number", strToReplace:"%%CUSTOMER_NO%%"},
+	            		"order" : {prompt : "Order Number", strToReplace:"%%ORDER_NO%%"}
+                	};
+                	var snippetType = this.hash.replace("${'#'}", "");
+                	var settings = defs[snippetType];
+                	var url = "${URLUtils.url('Scratchpad-GetSnippet')}";
+                	var id = prompt("Please enter " + settings.prompt, "");
+                	if(id) {
+                    	$.ajax(url, {data:{type : snippetType}})
+                		.done(function(data){
+                			if(!data) return;
+                			
+                			var snippet = data.trim();
+                			
+                			editor.setValue(snippet.replace(settings.strToReplace, id));
+                			editor.focus();
+                		});                		
+                	}
+                });
+                
+                $(".popup.import").on("click", "a", function() {
+                	var source = editor.getValue();
+                	var importStr = "importPackage( " + this.text + " )"
+                	if(source.indexOf(importStr) < 0) {
+                    	editor.setValue(importStr + ";\n" + source);
+                    	editor.focus();
+                	}
+                });
+                
+                $("#import-script").on("click", function() {
+                	var scriptPath = prompt("Please enter script path", "");
+                	
+                	if(!scriptPath) { 
+                		editor.focus();
+                		return;
+                	}
+                	
+                	var regExp = /^\/([_a-zA-Z]+)\/cartridge\/scripts\/(.*)/;
+                	
+                	if(regExp.test(scriptPath)) {
+                		scriptPath = scriptPath.replace(regExp, "$1:$2");
+                	}
+                	
+                	var source = editor.getValue();
+                	if(source.indexOf(scriptPath) < 0) {
+                		var importStr = 'importScript("' + scriptPath + '");\n';
+                    	editor.setValue(importStr + source);
+                    	editor.focus();
+                	}
+                	
+                });
+                
+                if(window.localStorage) {
+                    window.onbeforeunload = function() {
+                    	if(!editor.isClean()) {
+                    		return "Your code is not saved.";
+                    	}
+                    };
+                }
+            });
+            
+        </script>
+    </body>
+</html>

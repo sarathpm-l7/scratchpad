@@ -1,0 +1,44 @@
+<isscript>
+	var propKeys: Array = [];
+	var methodKeys : Array = [];
+
+	for(var key : String in pdict.Result) {
+		if(typeof pdict.Result[key] == 'function') {
+			methodKeys.push(key);
+		}
+		else {
+			propKeys.push(key);
+		}
+	}
+	
+	propKeys.sort();
+	methodKeys.sort();
+</isscript>
+<section>
+	<h3>Object: ${pdict.Result}</h3>
+	<isif condition="${propKeys.length > 0}">
+		<h4>Properties:</h4>
+		<table>
+			<thead>
+				<tr>
+					<th class="property-name">Property Name</th>
+					<th class="property-type">Type</th>
+					<th>Value</th>
+				</tr>
+			</thead>
+			<tbody>
+				<isloop items="${propKeys}" var="key">
+					<tr>
+						<td class="property-name">${key}</td><td class="property-type">${typeof pdict.Result[key]}</td><td>${pdict.Result[key]}</td>
+					</tr>
+				</isloop>
+			</tbody>
+		</table>
+	</isif>
+	<isif condition="${methodKeys.length > 0}">
+		<h4>Methods:</h4>
+		<isloop items="${methodKeys}" var="key">
+			<div><strong>${key}</strong> :  ${pdict.Result[key]}</div>
+		</isloop>
+	</isif>
+</section>
